@@ -11,6 +11,7 @@ Dependencies: chalk, swig, express, socket.io
 This has been tested on node.js v4.2.2 and v4.2.6.
 
 Few things to note:
+
 1. You must install the above dependencies!
 2. Line 107 in "template.html" must be changed to point to your server, or by default the service is only accessible to localhost.
 3. By default, the service will listen on port 1337.
