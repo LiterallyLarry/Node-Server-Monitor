@@ -62,7 +62,10 @@ var options = {
     
 
 var app = express(),  
-    io = require('socket.io').listen(https.createServer(options,app).listen(port));  
+    // Uncomment for HTTPS/SSL, provided the options above are also uncommented
+    //io = require('socket.io').listen(https.createServer(options,app).listen(port));
+    // Uncomment for HTTP
+    io = require('socket.io').listen(http.createServer(app).listen(port));
  
     app.engine('html', swig.renderFile);  
     app.set('view engine', 'html');  

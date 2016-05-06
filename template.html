@@ -40,7 +40,7 @@ height:600px;
 width:100%;
 }
 .header {
-font-size:64px;
+font-size:48px;
 padding:5px;
 }
 .footer {
@@ -103,7 +103,7 @@ display:none;
 <script src="//cdn.socket.io/socket.io-1.4.5.js"></script>
 <script>
 var scount = {{ serverobjects.length }};
-// This line needs to point to your public server, or clients cannot connect
+// This line needs to point to your server through a publicly accessible address, or clients will be unable to connect
 var socket = io.connect('http://localhost:1337/');
 var begin = false;
 socket.on('server_connection', function(data){
