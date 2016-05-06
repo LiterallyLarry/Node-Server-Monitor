@@ -1,0 +1,154 @@
+<html>
+<head>
+<title>{{ pagetitle }}</title>
+<link href='https://fonts.googleapis.com/css?family=Raleway:400,700' rel='stylesheet' type='text/css'>
+<style>
+html {
+background: url(images/bg.png) no-repeat center center fixed; 
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover;
+background-size: cover;
+color:#ffffff;
+}
+body,html {
+font-family:'Raleway',sans-serif;
+margin:0;
+padding:0;
+border:0;
+top:0;
+left:0;
+text-shadow:1px 1px 1px #000;
+}
+a {
+color:#ffffff;
+}
+.container {
+background:rgba(0,0,0,0.5);
+box-shadow: 0 0 15px 5px #fff;
+height:100%;
+margin:0 auto;
+width:800px;
+text-align:center;
+}
+.container2 {
+position:absolute;
+top:50%;
+margin-top:-300px;
+left: 0;
+height:600px;
+width:100%;
+}
+.header {
+font-size:64px;
+padding:5px;
+}
+.footer {
+font-size:16px;
+padding:5px;
+}
+.server_connector {
+display:none;
+font-size:24px;
+padding:5px;
+}
+table {
+background:rgba(0,0,0,0.25);
+font-size:24px;
+padding:10px;
+margin-top:25px;
+margin-bottom:25px;
+margin-left: auto;
+margin-right: auto;
+}
+td {
+padding:5px;
+}
+td.server_name0 {
+background:rgba(255,255,255,0.1);
+text-align:left;
+min-width:300px;
+}
+td.server_name1 {
+background:rgba(0,0,0,0.1);
+text-align:left;
+min-width:300px;
+}
+td.server_status {
+color:#000;
+text-shadow:initial;
+text-align:center;
+min-width:100px;
+}
+span.server_status {
+display:none;
+}
+</style>
+</head>
+<body>
+<div class="container"><div class="container2">
+<div class="header"><span class="header">{{ pagetitle }}</span></div>
+<div class="server_connector"><span class="server_connector">Please wait for connection...</span></div>
+<table>
+{% for server in serverobjects %}
+<tr>
+<td class="server_name{{ loop.index0%2 }}">{{ server.public_name }}</td>
+<td class="server_{{ loop.index0 }} server_status"><span class="server_status server_{{ loop.index0 }}">N/A</span></td>
+</tr>
+{% endfor %}
+</table>
+<div class="footer"><span class="footer"><a href="https://github.com/LiterallyLarry/Node-Server-Monitor">Host your own status page!</a></span></div>
+</div></div>
+<script src="//code.jquery.com/jquery-1.11.1.js"></script>
+<script src="//cdn.socket.io/socket.io-1.4.5.js"></script>
+<script>
+var scount = {{ serverobjects.length }};
+// This line needs to point to your public server, or clients cannot connect
+var socket = io.connect('http://localhost:1337/');
+var begin = false;
+socket.on('server_connection', function(data){
+$('span.server_connector').html('Connected to server.');
+if (!begin) {
+heartbeat(0);
+begin = true;
+}
+});
+socket.on('server_count', function(data){
+if (data.msg!=scount) {
+location.reload();
+}
+});
+socket.on('server_status', function(data){
+if (data.msg[2]!=scount) {
+location.reload();
+}
+$('span.'+data.msg[0]).html(data.msg[1]);
+switch (data.msg[1]) {
+case "UP":
+$('td.'+data.msg[0]).css("background","rgb(0,255,0)");
+break;
+case "DOWN":
+$('td.'+data.msg[0]).css("background","rgb(255,0,0)");
+break;
+default:
+$('td.'+data.msg[0]).css("background","initial");
+}
+});
+function heartbeat(count) {
+if (!socket.connected) {
+$('span.server_connector').html("Disconnected from server, attempting to reconnect...");
+for (var i = 0; i < scount; i++) {
+$('td.server_'+i).css("background","initial");
+$('span.server_'+i).html("N/A");
+}
+count++;
+console.log("Heartbeat at: "+count);
+setTimeout("heartbeat("+count+")", 5000);
+}
+else {
+setTimeout("heartbeat(0)", 5000);
+}
+}
+</script>
+</body>
+</html>

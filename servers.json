@@ -1,0 +1,19 @@
+{  
+"servers":[
+{
+"private_name":"larryhui.com",
+"public_name":"Larry's Website",
+"port":80
+},
+{
+"private_name":"google.com",
+"public_name":"Google Search",
+"port":80
+},
+{
+"private_name":"chat.freenode.net",
+"public_name":"Freenode IRC",
+"port":6697
+}
+]
+}
